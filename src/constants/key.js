@@ -10,8 +10,8 @@ export const Key = {
     DRIVER_API_URL,
     ORDER_API_URL,
     USER_API_URL,
-    mapApiKey: 'AIzaSyASRGQshp6t0wfi0WA-6MoHQsD0qAfflaM',
-    unsplashApiKey: "nsjVrH4CnoI197tnVB1miQ9Q3gkfeaWfYRkm-1cAPR4",
+    mapApiKey: '',
+    unsplashApiKey: "",
 };
 
 export default Key;
