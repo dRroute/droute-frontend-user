@@ -12,25 +12,27 @@ import { useSelector, useDispatch } from "react-redux";
 import MyStatusBar from "../../components/myStatusBar";
 import { Colors } from "../../constants/styles";
 import { selectUser } from "../../redux/selector/authSelector";
+import { logoutUser } from "../../redux/slice/authSlice";
 
 const PendingAccountScreen = ({ navigation }) => {
-  const user = useSelector (selectUser);
-//   const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
   return (
     <View style={styles.container}>
-        <MyStatusBar/>
+      <MyStatusBar />
       <Image
         source={require("../../../assets/images/sadCar.png")}
         style={styles.image}
       />
 
-      {user?.status ?(<Text style={styles.title}>
-        Oops! Your account is currently 
-       { user?.status||" On Hold"}
-       </Text>):(<Text style={styles.title}>
-       Unexpected Error Uccured
-      </Text>)
-      }
+      {user?.status ? (
+        <Text style={styles.title}>
+          Oops! Your account is currently{" "}
+          {(user?.status || "On Hold").toLowerCase()}
+        </Text>
+      ) : (
+        <Text style={styles.title}>Unexpected Error Uccured</Text>
+      )}
 
       <Text style={styles.subtitle}>
         Your access has been restricted. Please contact the administrator for
@@ -43,9 +45,7 @@ const PendingAccountScreen = ({ navigation }) => {
       >
         <Text style={styles.buttonText}>Contact Support</Text>
       </TouchableOpacity>
-      <TouchableOpacity 
-      //   onPress={() => dispatch(logoutUser())}
-      >
+      <TouchableOpacity onPress={() => dispatch(logoutUser())}>
         <Text style={styles.goBackText}>Log out</Text>
       </TouchableOpacity>
     </View>
@@ -84,5 +84,9 @@ const styles = StyleSheet.create({
     marginVertical: 30,
   },
   buttonText: { fontSize: 14, color: "white", fontWeight: "bold" },
-  goBackText: { fontSize: 14, color:Colors.darkOrangeColor, textAlign: "center" },
+  goBackText: {
+    fontSize: 14,
+    color: Colors.darkOrangeColor,
+    textAlign: "center",
+  },
 });

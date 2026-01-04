@@ -56,3 +56,86 @@ export const DottedBlackLoader = () => {
     </View>
   );
 };
+
+export const LottieSuccess = () => {
+  return (
+    // <View
+    //   style={{
+    //     position: "absolute",
+    //     top: 0,
+    //     left: 0,
+    //     right: 0,
+    //     bottom: 0,
+    //     justifyContent: "center",
+    //     alignItems: "center",
+    //     // backgroundColor: "rgba(182, 206, 232, 0.3)",
+    //     zIndex: 999,
+    //   }}
+    // >
+      <LottieView
+        source={require("./success.json")}
+        autoPlay
+        loop
+        style={{
+          width: 100,
+          height: 100,
+        }}
+      />
+    // </View>
+  );
+};
+
+export const LottieFaiure = () => {
+  return (
+    <View
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: "center",
+        alignItems: "center",
+        // backgroundColor: "rgba(182, 206, 232, 0.3)",
+        zIndex: 999,
+      }}
+    >
+      <LottieView
+        source={require("./failure.json")}
+        autoPlay
+        loop
+        style={{
+          width: 100,
+          height: 100,
+        }}
+      />
+    </View>
+  );
+};
+export const LottieWarning = () => {
+  return (
+    <View
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: "center",
+        alignItems: "center",
+        // backgroundColor: "rgba(182, 206, 232, 0.3)",
+        zIndex: 999,
+      }}
+    >
+      <LottieView
+        source={require("./warning.json")}
+        autoPlay
+        loop
+        style={{
+          width: 100,
+          height: 100,
+        }}
+      />
+    </View>
+  );
+};

@@ -4,8 +4,9 @@ import { Alert } from "react-native";
 import Key from "../constants/key";
 import { useSelector } from "react-redux";
 import { selectUser } from "../redux/selector/authSelector";
-import { uploadSingleDocument } from "../redux/thunk/documentThunk";
+
 import { showSnackbar } from "../redux/slice/snackbarSlice";
+import { uploadSingleDocument } from "../redux/thunk/documentThunk";
 export const setupImagePicker = (file, label) => {
   // console.log("inside setup image");
 
@@ -32,19 +33,26 @@ export const setupImagePicker = (file, label) => {
   return formData;
 };
 
-export const handleImageUpload = async (file, label, user, dispatch) => {
+export const handleImageUpload = async (
+  file,
+  name,
+  id,
+  documentName,
+  dispatch
+) => {
   console.log("this is file = ", file);
+
   const data = {
     file,
-    driverId: user?.driverId,
-    // driverId: parseInt(user?.driverId, 10),
-    documentName: label,
+    id,
+    name,
+    documentName,
   };
 
-  if (file && label) {
+  if (file && name && id && documentName) {
     const response = await dispatch(uploadSingleDocument(data));
     if (uploadSingleDocument.fulfilled.match(response)) {
-      return response?.payload?.data;
+      return response?.payload?.data?.documentUrl;
     } else {
       dispatch(
         showSnackbar({
@@ -52,8 +60,8 @@ export const handleImageUpload = async (file, label, user, dispatch) => {
             response?.payload?.message ||
             response?.payload?.title ||
             "Document Not Uploaded. Please try again",
-            type:"error",
-            time: 5000
+          type: "error",
+          time: 5000,
         })
       );
       return null;
@@ -61,13 +69,16 @@ export const handleImageUpload = async (file, label, user, dispatch) => {
   } else {
   }
 };
+
 export const openGallery = async (
-  currentImageSetter,      
-  label,       
-  setImageLoading,         
-  setBottomSheetVisible,   
-  user,                   
-  dispatch  
+  currentImageSetter,
+  label,
+  setImageLoading,
+  setBottomSheetVisible,
+  name,
+  id,
+  documentName,
+  dispatch
 ) => {
   setImageLoading(label);
   setBottomSheetVisible(false);
@@ -90,12 +101,13 @@ export const openGallery = async (
       console.log("File  = ", file);
       const googleDriveURI = await handleImageUpload(
         file,
-        label,
-        user,
+        name,
+        id,
+        documentName,
         dispatch
       );
-      console.log("google Drive URI ", googleDriveURI+"&t="+Date.now());//to make unique url , to replace cache data
-      currentImageSetter(googleDriveURI+"&t="+Date.now());
+      console.log("google Drive URI ", googleDriveURI + "&t=" + Date.now()); //to make unique url , to replace cache data
+      currentImageSetter(googleDriveURI + "&t=" + Date.now());
       return imageUri;
     }
   } catch (error) {
@@ -114,10 +126,13 @@ export const openCamera = async (
   label,
   setImageLoading,
   setBottomSheetVisible,
-  user,
+  name,
+  id,
+  documentName,
   dispatch
 ) => {
-  console.log("This is label of image:", label);
+
+  console.log("This is label of image:");
   setImageLoading(label);
   setBottomSheetVisible(false);
 
@@ -137,13 +152,14 @@ export const openCamera = async (
 
       const googleDriveURI = await handleImageUpload(
         file,
-        label,
-        user,
+        name,
+        id,
+        documentName,
         dispatch
       );
       console.log("Google Drive URI =", googleDriveURI);
 
-          currentImageSetter(googleDriveURI+"&t="+Date.now());
+      currentImageSetter(googleDriveURI + "&t=" + Date.now());
       return imageUri;
     }
   } catch (error) {
@@ -156,7 +172,6 @@ export const openCamera = async (
 
   return null;
 };
-
 
 export const removeImage = (setter, setBottomSheetVisible) => {
   setter(null);
@@ -279,7 +294,7 @@ export const fetchAddressComponent = async (latitude, longitude) => {
       pinCode: pinCode ? pinCode.long_name : "",
       address,
     };
-    console.log("address data is ", addressData);
+    // console.log("address data is ", addressData);
     return addressData;
   } catch (error) {
     console.log("Error fetching address:", error);
@@ -301,4 +316,31 @@ export const fetchImageForCity = async ({ city }) => {
 export const trimText = (text, maxLength) => {
   if (typeof text !== "string") return "";
   return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+};
+
+// Map enum names to abbreviations
+const weightUnitAbbreviations = {
+  GRAMS: "g",
+  KILOGRAMS: "kg",
+  POUNDS: "lb",
+  OUNCES: "oz",
+  MILLIGRAMS: "mg",
+  TONNES: "t",
+};
+
+export const getWeightUnitAbbreviation = (enumName) => {
+  return weightUnitAbbreviations[enumName] || enumName;
+};
+
+// Map enum names to abbreviations for DimensionUnit
+const dimensionUnitAbbreviations = {
+  CENTIMETERS: "cm",
+  METERS: "m",
+  INCHES: "in",
+  FEET: "ft",
+  MILLIMETERS: "mm",
+};
+
+export const getDimensionUnitAbbreviation = (enumName) => {
+  return dimensionUnitAbbreviations[enumName] || enumName;
 };

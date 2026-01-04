@@ -2,64 +2,47 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   Linking,
 } from "react-native";
 import React from "react";
-import { Colors, Fonts, Sizes, commonStyles } from "../../constants/styles";
+import { Colors, Fonts, Sizes } from "../../constants/styles";
 import MyStatusBar from "../../components/myStatusBar";
 import { commonAppBar } from "../../components/commonComponents";
 
-
-const dummyText =
-  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown.";
-
 const termsAndConditionsObject = {
   Safety:
-    "Charging station operators are responsible for prioritizing user safety and implementing necessary precautions to ensure a safe charging experience.",
-
+    "Both users and drivers are expected to prioritize safety during the pickup, transit, and delivery of goods. Droute is not liable for accidents caused by user or driver negligence.",
   Damage:
-    "Operators are liable for any damages caused to the property of the land-owning agency by their equipment.",
-
+    "Drivers are responsible for ensuring the safety of the goods in their possession. In case of damage due to mishandling or negligence, liability may be assigned to the responsible party.",
   "Limited Liability":
-    "Operators may limit their liability for certain losses, including but not limited to loss of profits, data, or goodwill, arising from the use of their website or services, to the extent permitted by applicable law.",
-
+    "Droute acts as a platform and holds no responsibility for direct or indirect losses (financial or otherwise) arising from delivery delays, vehicle issues, or user-driver disputes.",
   "Fair Usage":
-    "Certain offers may include a fair usage period with limits on usage (e.g., kilowatt-hours or duration).",
-
-  "Standard Tariff":
-    "After the fair usage period expires, standard tariffs will apply for continued use.",
-
+    "Users and drivers must not misuse the platform for activities outside the intended logistics and transport purposes. Misuse may result in suspension or termination of access.",
+  Pricing:
+    "Pricing is calculated based on distance, weight, volume, and current demand. Prices may vary and are subject to change without prior notice.",
   Payment:
-    "Users agree to pay for the electricity consumed. Bills will itemize usage and associated costs for transparency.",
-
+    "Users agree to pay for services booked through the platform. All applicable charges will be shown at the time of booking and must be paid digitally.",
   "Payment Methods":
-    "Payments are typically processed through registered debit or credit cards. Users may be required to provide payment details during registration.",
-
-  "Dispute Resolution":
-    "Any discrepancies in billing should be reported promptly. The operator will investigate and address billing errors in accordance with applicable policies.",
-
+    "Payments are processed via integrated payment gateways. Users may be required to add wallet balance or link cards/bank accounts for transactions.",
+  Insurance:
+    "Optional insurance can be purchased for high-value goods. In the absence of insurance, Droute shall not be responsible for damage, loss, or theft.",
+  Cancellation:
+    "Cancellations must be made within the allowed window to avoid charges. Repeated last-minute cancellations may lead to account restrictions.",
+  Disputes:
+    "Any disputes regarding deliveries, payments, or behavior should be reported through the support system. Droute will mediate where applicable.",
   Suspension:
-    "Non-payment of bills may result in account suspension until outstanding amounts are settled.",
-
+    "Violation of guidelines, repeated misconduct, or fraudulent activity may lead to account suspension or permanent deactivation.",
   "Termination/Modification":
-    "Operators reserve the right to terminate or modify offers at any time without prior notice. This includes changes to locations, usage terms, or other conditions.",
-
+    "Droute reserves the right to modify terms, pricing, or services offered without prior notice. Continued use of the platform implies acceptance of such changes.",
   "Governing Law":
-    "All offers are governed by the laws of the jurisdiction where they are applicable.",
-
-  "Technical Issues":
-    "Operators are not responsible for technical difficulties that prevent users from accessing or using an offer, unless caused by the operator’s negligence.",
-
+    "These terms are governed by the applicable laws of the jurisdiction in which the service is availed.",
+  Tracking:
+    "Users agree to share their location for accurate pickups and deliveries. Drivers agree to allow location tracking for user and admin transparency.",
+  Privacy:
+    "User and driver data is handled in accordance with our Privacy Policy. Personal information will not be shared without consent, except as required by law.",
   Acceptance:
-    "By using a charging station or accepting an offer, you agree to abide by these Terms and Conditions.",
-
-  Interoperability:
-    "Charging stations are designed with interoperability in mind, enabling users to access various charging networks seamlessly.",
-
-  Connectivity:
-    "EV charging infrastructure requires connectivity to a central management system to ensure efficient operation and real-time updates.",
+    "By using the Droute platform, both users and drivers agree to these Terms and Conditions and any future updates thereof.",
 };
 
 const TermsAndConditionsScreen = ({ navigation }) => {
@@ -80,17 +63,15 @@ const TermsAndConditionsScreen = ({ navigation }) => {
       <View
         style={{ marginHorizontal: Sizes.fixPadding * 2.0, marginBottom: 50 }}
       >
-        <Text style={{ fontSize: 12, marginBottom: 10 ,textAlign: 'justify'}}>
-          By visiting our platform, using, or availing any of our services or
-          products, you indicate that you understand, agree, and consent to
-          these Terms and Conditions. You hereby give your unconditional consent
-          to EV Charging Station Finder App ("EV Care") for the collection, use,
-          storage, processing, sharing, transfer, and disclosure of your
-          information as required under applicable law. You acknowledge that you
-          have all legal rights and lawful authority to share your information
-          with us. You further acknowledge that the collection, sharing,
-          processing, and transferring of information provided by you shall not
-          cause any loss or wrongful gain to you or any other person...
+        <Text style={{ fontSize: 12, marginBottom: 10, textAlign: "justify" }}>
+          By visiting our platform or availing any of our services, you indicate
+          that you understand, agree, and consent to these Terms and Conditions.
+          You hereby give your unconditional consent to Droute for the
+          collection, use, storage, processing, sharing, transfer, and
+          disclosure of your information as required under applicable law. You
+          acknowledge that you have the legal authority to share your
+          information with us, and that its use will not cause any loss or
+          wrongful gain to you or any other person.
         </Text>
         {Object.entries(termsAndConditionsObject).map(
           ([title, description], index, array) => (
@@ -98,15 +79,15 @@ const TermsAndConditionsScreen = ({ navigation }) => {
               <Text style={{ ...Fonts.blackColor16Regular, fontWeight: "700" }}>
                 {title}:
               </Text>
-              <Text style={{ ...Fonts.blackColor16Regular,textAlign: 'justify' }}>
+              <Text style={{ ...Fonts.blackColor16Regular, textAlign: "justify" }}>
                 {description}
                 {index === array.length - 1 ? (
                   <Text
-                    // onPress={() => Linking.openURL("http://evcareindia.com/terms-and-conditions")}
-                    style={{ color: "blue", marginLeft: 5 }}
+                    // onPress={() => Linking.openURL("https://droute.app/privacy")}
+                    style={{ color: "blue" }}
                   >
                     {" "}
-                    see more
+                    See more
                   </Text>
                 ) : null}
               </Text>
@@ -116,8 +97,6 @@ const TermsAndConditionsScreen = ({ navigation }) => {
       </View>
     );
   }
-
-
 };
 
 export default TermsAndConditionsScreen;

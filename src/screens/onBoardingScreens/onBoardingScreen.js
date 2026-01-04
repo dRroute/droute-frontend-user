@@ -24,25 +24,26 @@ const onboardingScreenList = [
   {
     id: "1",
     onboardingImage: require("../../../assets/images/onboarding1.png"),
-    onboardingTitle: "Book Vehicle And keep Parcel Pack",
+    onboardingTitle: "Book a Vehicle & Prepare Your Parcel",
     onboardingDescription:
-      "Lorem ipsum dolor sit amet consectetur. Lectus vulputate pretium phasellus elementum quam pellentesque urna velit.",
+      "Easily schedule a vehicle for your goods and get ready for a hassle-free pickup from your doorstep.",
   },
   {
     id: "2",
     onboardingImage: require("../../../assets/images/onboarding2.png"),
-    onboardingTitle: "Find Nearest Ongoing Cargo Vehicle",
+    onboardingTitle: "Find Nearest Available Cargo Vehicle",
     onboardingDescription:
-      "Lorem ipsum dolor sit amet consectetur. Lectus vulputate pretium phasellus elementum quam pellentesque urna velit.",
+      "Our platform smartly connects you with nearby drivers already en route, reducing wait time and cost.",
   },
   {
     id: "3",
     onboardingImage: require("../../../assets/images/onboarding3.png"),
-    onboardingTitle: "Get Safe And Secure Delivery",
+    onboardingTitle: "Experience Safe & Timely Delivery",
     onboardingDescription:
-      "Lorem ipsum dolor sit amet consectetur. Lectus vulputate pretium phasellus elementum quam pellentesque urna velit.",
+      "Track your parcel in real-time and ensure secure delivery, backed by trusted drivers and customer support.",
   },
 ];
+
 
 const OnboardingScreen = ({ navigation }) => {
   const backAction = () => {

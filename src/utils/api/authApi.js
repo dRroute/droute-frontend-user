@@ -10,7 +10,7 @@ const { DRIVER_API_URL, USER_API_URL } = Key;
 // API CALLS
 export const signInAPI = (data) =>
   apiPostRequest({
-    apiUrl: `${DRIVER_API_URL}/login`,
+    apiUrl: `${USER_API_URL}/auth/login`,
     content_type: "application/json",
     data: data,
     // accessToken,
@@ -18,14 +18,14 @@ export const signInAPI = (data) =>
 
 export const registerAPI = (data) =>
   apiPostRequest({
-    apiUrl: `${DRIVER_API_URL}/signup`,
+    apiUrl: `${USER_API_URL}/auth/signup`,
     content_type: "application/json",
     data: data,
   });
 
-export const getDriverByDriverIdAPI = (driverId) =>
+export const getUserByIdAPI = (userId) =>
   apiGetRequest({
-    apiUrl: `${DRIVER_API_URL}/${driverId}`,
+    apiUrl: `${USER_API_URL}/${userId}`,
     content_type: "application/json",
   });
 
@@ -38,14 +38,8 @@ export const sendOtpAPI = (data) =>
 
 export const resetPasswordAPI = (data) =>
   apiPutRequest({
-    apiUrl: `${DRIVER_API_URL}/reset-password`,
+    apiUrl: `${USER_API_URL}/reset-password`,
     content_type: "application/json",
     data: data,
   });
 
-export const completeProfileAPI = (data) =>
-  apiPutRequest({
-    apiUrl: `${DRIVER_API_URL}/profile-complete`,
-    content_type: "application/json",
-    data: data,
-  });

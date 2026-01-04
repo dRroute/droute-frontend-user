@@ -4,14 +4,13 @@ import { Colors } from '../constants/styles';
 
 const MyStatusBar = () => {
   return (
-    <SafeAreaView style={{backgroundColor: Colors.primaryColor}}>
-      <StatusBar
-        translucent={false}
-        backgroundColor={Colors.primaryColor}
-        barStyle={'light-content'}
-      />
-    </SafeAreaView>
+    <StatusBar
+      translucent={false}
+      backgroundColor={Colors.primaryColor}
+      barStyle="light-content"
+    />
   );
 };
+
 
 export default MyStatusBar;

@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 // import authReducer, { restoreUser } from ;
-import authReducer, { restoreUser } from "../slice/authSlice";
+import authReducer from "../slice/authSlice";
 import snackbarReducer, { showSnackbar } from "../slice/snackbarSlice";
-import { getDriverByDriverId } from "../thunk/authThunk";
+import { getUserById } from "../thunk/authThunk";
 
 const store = configureStore({
   reducer: {
@@ -16,13 +16,13 @@ const store = configureStore({
 
 const loadUserData = async () => {
   try {
-    const driver_id = await AsyncStorage.getItem("driver_id");
+    const user_id = await AsyncStorage.getItem("user_id");
     // const accessToken = await AsyncStorage.getItem("accessToken");
-    console.log("Driver Id in store", driver_id);
+    console.log("user Id in store", user_id);
     // console.log("Access token in store", accessToken);
-    // if (driver_id && accessToken) {
-    if (driver_id) {
-      await store.dispatch(getDriverByDriverId(parseInt(driver_id)));
+    // if (user_id && accessToken) {
+    if (user_id) {
+      await store.dispatch(getUserById(parseInt(user_id)));
     }
   } catch (error) {
     console.log("Error loading user data:", error);

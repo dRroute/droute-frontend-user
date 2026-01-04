@@ -19,6 +19,7 @@ import { showSnackbar } from "../../redux/slice/snackbarSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { sendOTP } from "../../redux/thunk/authThunk";
 import { selectAuthErrorMessage } from "../../redux/selector/authSelector";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const SignUpScreen = ({ navigation }) => {
   const [userType, setUserType] = useState("user");
   const [email, setEmail] = useState(null);
@@ -72,7 +73,7 @@ const SignUpScreen = ({ navigation }) => {
       password: password,
       confirmPassword: confirmPassword,
       contactNo: mobileNumber,
-      role: "driver",
+      role: "user",
     };
     const validationError = validateForm(data);
     if (validationError) {
@@ -96,6 +97,10 @@ const SignUpScreen = ({ navigation }) => {
           time: 2000,
         })
       );
+       await AsyncStorage.setItem(
+          "user_id",
+          String(response?.payload?.data?.userId)
+        );
     
        navigation.navigate("VerificationScreen", { data ,otp});
     } else {

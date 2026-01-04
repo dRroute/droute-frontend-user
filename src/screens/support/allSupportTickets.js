@@ -29,6 +29,7 @@ const allIssues=[
 {
     id: "1",
     title: "App not loading",
+    description: "This is decsription...",
     status: "Open",
     created_at: "2024-08-25 10:30 AM",
     user: {
@@ -42,6 +43,7 @@ const allIssues=[
     id: "2",
     title: "App not loading",
     status: "Open",
+    description: "This is decsription...",
     created_at: "2024-08-25 10:30 AM",
     user: {
       avatar: null,

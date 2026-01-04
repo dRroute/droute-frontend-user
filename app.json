@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#861658"
+      "backgroundColor": "#083c5d"
     },
     "ios": {
       "bundleIdentifier": "",
@@ -25,22 +25,22 @@
       }
     },
     "android": {
-       "permissions": [
-        "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION",
+      "permissions": [
+        "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION"
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#861658"
-      }, 
-       "config": {
+        "backgroundColor": "#083c5d"
+      },
+      "config": {
         "googleMaps": {
           "apiKey": "AIzaSyASRGQshp6t0wfi0WA-6MoHQsD0qAfflaM"
         }
       },
-
       "edgeToEdgeEnabled": true,
       "package": "com.alokkumarsingh.droute_user"
     },
@@ -49,10 +49,10 @@
     },
     "extra": {
       "eas": {
-        "projectId": ""
+        "projectId": "720c5d1b-2e78-407f-8634-f0f927ce0934"
       }
     },
-   "plugins": [
+    "plugins": [
       [
         "expo-image-picker",
         {
@@ -60,6 +60,5 @@
         }
       ]
     ]
-
   }
 }

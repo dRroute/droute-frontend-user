@@ -1,17 +1,20 @@
 import axios from "axios";
 
-export const apiPutRequest = async (request) => {
-    
-        const headers = {
-            "accept": "*/*",
-            "content-type": request.content_type,
-            Authorization: `Bearer ${request.accessToken}`, // Add Bearer token here
+export const apiPutRequest = async ({ apiUrl, content_type, data, accessToken }) => {
+  const headers = {
+    "Accept": "*/*",
+    "Content-Type": content_type || "application/json",
+  };
 
-        };
-        console.log("request in apiPatchRequest", JSON.stringify(request, null, 2));
+  if (accessToken) {
+    headers["Authorization"] = `Bearer ${accessToken}`;
+  }
 
-        const response = await axios.put(request.apiUrl, request.data, { headers });
-        console.log("response in apiPatchRequest", response.data);
-        return response;
-    
+  console.log("PUT Request:", apiUrl);
+  console.log("Headers:", headers);
+  console.log("Body:", data);
+
+  const response = await axios.put(apiUrl, data, { headers });
+  console.log("Response:", response.data);
+  return response;
 };

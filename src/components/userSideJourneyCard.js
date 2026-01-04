@@ -2,16 +2,30 @@ import React, { useRef, useEffect } from "react";
 import { View, Text, Image, StyleSheet, Animated } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Colors, commonStyles } from "../constants/styles";
-import { trimText } from "../utils/commonMethods";
+import { getDimensionUnitAbbreviation, getWeightUnitAbbreviation, trimText } from "../utils/commonMethods";
 
 // JourneyCard Component
 export const JourneyCard = ({ data }) => {
 
+  console.log('data in journey card = ', data);
+  const avatar = data?.driver?.documents?.find(
+    (doc) => doc.documentName === `${data?.driver?.driverId}_avatar`
+  )?.documentUrl;
+
+  const trimText = (text, maxLength) =>
+    text?.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+
+  const formatDateTime = (isoString) => {
+    if (!isoString) return "";
+    const date = new Date(isoString);
+    return date.toLocaleString();
+  };
+
   return (
-    <View style={styles.container}>
+    <View key={(Date.now())} style={styles.container}>
       <View style={styles.avatarContainer}>
-        {data?.avatar ? (
-          <Image source={{ uri:data?.avatar }} style={styles.avatar} />
+        {avatar ? (
+          <Image source={{ uri: avatar }} style={styles.avatar} />
         ) : (
           <Icon name="person-off" size={50} color="#e0e0eb" />
         )}
@@ -20,8 +34,10 @@ export const JourneyCard = ({ data }) => {
       <View style={styles.card}>
         <View style={styles.topSection}>
           <View style={[commonStyles.rowSpaceBetween, styles.rowAlign]}>
-            <Text style={styles.driverName}>{trimText(data?.driverName, 20)}</Text>
-            <Text style={styles.rating}>⭐ {data?.rating}</Text>
+            <Text style={styles.driverName}>
+              {trimText(data?.driver?.fullName, 20)}
+            </Text>
+            <Text style={styles.rating}>⭐ {data?.averageDriverRating || 0}</Text>
           </View>
         </View>
 
@@ -29,26 +45,40 @@ export const JourneyCard = ({ data }) => {
 
         <View style={styles.middleSection}>
           <View style={styles.locationBlock}>
-            <Text style={styles.cityText}>{trimText(data?.sourceCity, 20)}</Text>
-            <Text style={styles.timeText}>{data?.sourceTime}</Text>
-            <Text style={styles.addressText}>{trimText(data?.sourceAddress, 60)}</Text>
+            <Text style={styles.cityText}>
+              {trimText(data?.journey?.journeySource?.city, 20)}
+            </Text>
+            <Text style={styles.timeText}>
+              {formatDateTime(data?.journey?.expectedDepartureDateTime)}
+            </Text>
+            <Text style={styles.addressText}>
+              {trimText(data?.journey?.journeySource?.address, 60)}
+            </Text>
           </View>
           <View style={styles.locationBlock}>
-            <Text style={styles.cityText}>{trimText(data?.destinationCity, 20)}</Text>
-            <Text style={styles.timeText}>{data?.destinationTime}</Text>
-            <Text style={styles.addressText}>{trimText(data?.destinationAddress, 100)}</Text>
+            <Text style={styles.cityText}>
+              {trimText(data?.journey?.journeyDestination?.city, 20)}
+            </Text>
+            <Text style={styles.timeText}>
+              {formatDateTime(data?.journey?.expectedArrivalDateTime)}
+            </Text>
+            <Text style={styles.addressText}>
+              {trimText(data?.journey?.journeyDestination?.address, 100)}
+            </Text>
           </View>
         </View>
 
         <View style={styles.bottomSection}>
           <View style={styles.capacityBlock}>
             <Text style={styles.capacityText}>
-              Weight Capacity : {data?.weightCapacity}
+              Weight Capacity :{" "}
+              {`${data?.journey?.availableWeight} ${getWeightUnitAbbreviation(data?.journey?.availableWeightMeasurementType)}`}
             </Text>
           </View>
           <View style={styles.capacityBlock}>
             <Text style={styles.capacityText}>
-              Volume Capacity : {data?.volumeCapacity}
+              Volume Capacity :{" "}
+              {`${data?.journey?.availableLength} x ${data?.journey?.availableWidth} x ${data?.journey?.availableHeight} ${getDimensionUnitAbbreviation(data?.journey?.availableSpaceMeasurementType)}³`}
             </Text>
           </View>
         </View>
@@ -56,6 +86,7 @@ export const JourneyCard = ({ data }) => {
     </View>
   );
 };
+
 
 // JourneyCardSkeleton Component
 export const JourneyCardSkeleton = ({ count = 1 }) => {

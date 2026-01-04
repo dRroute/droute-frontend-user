@@ -29,38 +29,141 @@ import {
 } from "@expo/vector-icons";
 
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { trimText } from "../../utils/commonMethods";
+import { fetchAddressComponent, getUserLocation, trimText } from "../../utils/commonMethods";
 import {
   JourneyCard,
   JourneyCardSkeleton,
 } from "../../components/userSideJourneyCard";
+import { getUserAllOrders } from "../../redux/thunk/orderThunk";
+import { showSnackbar } from "../../redux/slice/snackbarSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser } from "../../redux/selector/authSelector";
+import { getAllJourney } from "../../redux/thunk/journeyThunk";
 // import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-const avatar = null;
+
 
 const JOURNEYS = [
-  {
-    id: "1",
-    avatar:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/800px-User_icon_2.svg.png",
-    driverName: "Driver Name",
-    rating: 4.5,
-    sourceCity: "Pune",
-    sourceTime: "12/08/25 3:00PM",
-    sourceAddress: "123 MG Road, Pune, Maharashtra 411045",
-    destinationCity: "Mumbai",
-    destinationTime: "12/08/25 8:00PM",
-    destinationAddress: "456 Marine Drive, Mumbai, Maharashtra, 411041",
-    weightCapacity: "200 kg",
-    volumeCapacity: "30 m^3",
-  },
+
 ];
 
 const UserHome = ({ navigation }) => {
+  const mapRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [state, setState] = useState(null);
+  const [region, setRegion] = useState({});
+  const [journeys, setJourneys] = useState([]);
+  const [currentLocation, setCurrentLocation] = useState(null);
+  const [errorMessage, setErrorMsg] = useState(null);
+  const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+  const handleRefresh = () => {
+    console.log("handleRefresh called");
+    setRefreshing(true);
+
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1500);
+  };
 
   const handleCardClick = (item) => {
-    navigation.navigate("PreviousJourneyDetail");
+    navigation.navigate("VehicleDetail",{item});
   };
+useEffect(() => {
+    const fetchLocationAndAddress = async () => {
+      try {
+        const { latitude, longitude } = await getUserLocation({
+          setRegion,
+          setCurrentLocation,
+          mapRef,
+          setErrorMsg,
+        });
+        if (latitude && longitude) {
+          const addressData = await fetchAddressComponent(latitude, longitude);
+
+          if (addressData?.address) {
+            setState(addressData?.state);
+            // console.log("state at home page =>",state);
+          }
+        } else {
+          console.log("Latitude or longitude not available.");
+        }
+      } catch (error) {
+         console.log(":", error);
+      }
+    };
+    fetchLocationAndAddress();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+       try {
+        const response = await dispatch(getUserAllOrders(user?.userId));
+        // console.log(" All orders at home",response)
+        if (getUserAllOrders.fulfilled && getUserAllOrders.fulfilled.match(response)) {
+          dispatch(
+            showSnackbar({
+              message: response?.payload?.message || "Orders loaded successfully",
+              type: "success",
+              time: 2000,
+            })
+          );
+        } else {
+          console.log("orders not found",response?.payload?.message)
+        }
+      } catch (error) {
+        dispatch(
+          showSnackbar({
+            message: "An error occurred while loading orders",
+            type: "error",
+            time: 2000,
+          })
+        );
+      }
+    };
+    fetchOrders();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchjourney = async () => {
+      try {
+        const response = await dispatch(getAllJourney());
+        console.log("All journey at home", response?.payload?.data);
+        setJourneys(...journeys, response?.payload?.data);
+        if (getAllJourney.fulfilled.match(response)) {
+          await dispatch(
+            showSnackbar({
+              message: response?.payload?.message || "journey loaded successfully",
+              type: "success",
+              time: 2000,
+            })
+          );
+        } else {
+          await dispatch(
+            showSnackbar({
+              message: response?.payload?.message || "Failed to load journeys",
+              type: "error",
+              time: 2000,
+            })
+          );
+        }
+      } catch (error) {
+        await dispatch(
+          showSnackbar({
+            message: "An error occurred while loading journeys",
+            type: "error",
+            time: 2000,
+          })
+        );
+      }
+    };
+    fetchjourney();
+  }, []);
+
+
+
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const animatedTopContainerStyle = {
@@ -77,25 +180,18 @@ const UserHome = ({ navigation }) => {
       extrapolate: "clamp",
     }),
   };
-  const feature1 = () => {
-    console.log("clicked feature1");
-  };
 
   const featuresList = [
     {
       title: "Your Orders",
       image: require("../../../assets/images/box.jpg"),
-      onPress: feature1,
+      onPress: () => navigation.navigate("AllOrders"),
     },
+
     {
-      title: "Estimate Price",
-      image: require("../../../assets/images/calci.png"),
-      onPress: feature1,
-    },
-    {
-      title: "Addresses",
-      image: require("../../../assets/images/home.png"),
-      onPress: feature1,
+      title: "Requested Journey",
+      image: require("../../../assets/images/miniTruck.png"),
+      onPress: () => navigation.navigate("PendingRequests"),
     },
   ];
 
@@ -121,20 +217,19 @@ const UserHome = ({ navigation }) => {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle="light-content"
-      />
       <View style={styles.upperBg}>
         <Animated.View style={[styles.upper, animatedTopContainerStyle]}>
           <View style={styles.headerContent}>
             <Text style={styles.headerTitle}></Text>
             <TouchableOpacity>
-              <Icon name="notifications" size={24} color={Colors.whiteColor} />
+              {/* <Icon name="notifications" size={24} color={Colors.whiteColor} /> */}
             </TouchableOpacity>
           </View>
-          <TouchableOpacity activeOpacity={0.8} style={styles.searchBox}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("SearchJourneyByName", { journeys })}
+            activeOpacity={0.8}
+            style={styles.searchBox}
+          >
             <MaterialIcons name="search" color={Colors.grayColor} size={24} />
             <Text
               numberOfLines={1}
@@ -155,6 +250,8 @@ const UserHome = ({ navigation }) => {
           <Animated.ScrollView
             refreshControl={
               <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
                 colors={["#9Bd35A", "#101942"]}
                 tintColor="#101942"
               />
@@ -178,34 +275,48 @@ const UserHome = ({ navigation }) => {
               <Text style={{ fontSize: 14, fontWeight: "700" }}>
                 Nearest Ongoing Vehicles:{" "}
               </Text>
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontWeight: "700",
-                  color: Colors.primaryColor,
-                }}
+              {/* <TouchableOpacity
+                onPress={() => navigation.navigate("AllNearestJourney")}
               >
-                See All
-              </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "700",
+                    color: Colors.primaryColor,
+                  }}
+                >
+                  See All
+                </Text>
+              </TouchableOpacity> */}
             </View>
-             {isLoading ? (
-                   <JourneyCardSkeleton count={5} />
-                 ) : (
-                   <View>
-                     {JOURNEYS.length > 0 ? (
-                       JOURNEYS.map((item) => (
-                         <TouchableOpacity activeOpacity={0.8} key={item.id} onPress={() => handleCardClick(item)}>
-                           <JourneyCard data={item} />
-                         </TouchableOpacity>
-                       ))
-                     ) : (
-                       <View style={styles.emptyContainer}>
-                         <Icon name="map-search-outline" size={60} color={Colors.grayColor} />
-                         <Text style={styles.emptyText}>Journey Not found</Text>
-                       </View>
-                     )}
-                   </View>
-                 )}
+            {isLoading ? (
+              <View style={{ paddingTop: 60, marginHorizontal: 10 }}>
+                <JourneyCardSkeleton count={5} />
+              </View>
+            ) : (
+              <View>
+                {journeys?.length > 0 ? (
+                  journeys.map((item) => (
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      key={item?.journey?.journeyId}
+                      onPress={() => handleCardClick(item)}
+                    >
+                      <JourneyCard data={item} />
+                    </TouchableOpacity>
+                  ))
+                ) : (
+                  <View style={styles.emptyContainer}>
+                    <Icon
+                      name="location-on"
+                      size={60}
+                      color={Colors.grayColor}
+                    />
+                    <Text style={styles.emptyText}>Journey Not found</Text>
+                  </View>
+                )}
+              </View>
+            )}
             {isLoading && (
               <>
                 {JourneyCardSkeleton(1)}
@@ -287,8 +398,9 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontWeight: "700",
     textAlign: "center",
-    maxWidth: 70,
-  }, emptyContainer: {
+    maxWidth: 60,
+  },
+  emptyContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",

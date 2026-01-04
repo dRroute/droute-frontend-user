@@ -1,37 +1,34 @@
 import React, { useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { clearSnackbar } from '../redux/slice/snackbarSlice';
 
 const Snackbar = () => {
   const dispatch = useDispatch();
-  const { message, type , time} = useSelector((state) => state.snackbar);
-  console.log("Snackbar message:", message); // Debugging line
+  const { message, type, time } = useSelector((state) => state.snackbar);
 
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => {
         dispatch(clearSnackbar());
-      }, time); // Auto close after this time 
+      }, time || 3000);
       return () => clearTimeout(timer);
     }
-  }, [message, dispatch]);
+  }, [message, dispatch, time]);
 
   if (!message) return null;
 
-  const bgColor = type === 'error' ? '#FF5722' : '#4caf50'; 
-//bgColor
-  return (
-    <View style={[styles.snackbarContainer]}>
-    <View style={[styles.snackbarInnerContainer ,{  backgroundColor: bgColor ,justifyContent:"center" }]}>
-    <Text style={styles.snackbarMessage}>{message}</Text>
-      <TouchableOpacity style={styles.Icon} onPress={() => dispatch(clearSnackbar())}>
-      <Ionicons name="close" size={15} color="white" />
-     </TouchableOpacity>
+  const bgColor = type === 'error' ? '#FF5722' : '#4caf50';
 
-    </View>
+  return (
+    <View style={[styles.snackbarContainer, { top: Platform.OS === 'android' ? 40 : 60 }]}>
+      <View style={[styles.snackbarInnerContainer, { backgroundColor: bgColor }]}>
+        <Text style={styles.snackbarMessage}>{message}</Text>
+        <TouchableOpacity style={styles.icon} onPress={() => dispatch(clearSnackbar())}>
+          <Ionicons name="close" size={16} color="white" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -39,40 +36,38 @@ const Snackbar = () => {
 const styles = StyleSheet.create({
   snackbarContainer: {
     position: 'absolute',
-    top: 60,
-    justifyContent:"center",
-    flexDirection: 'row',
-    alignItems: 'center',
-  
     width: '100%',
     zIndex: 9999,
-    paddingHorizontal:"10%",
-    
+    paddingHorizontal: '10%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  snackbarInnerContainer:{
+  snackbarInnerContainer: {
     flexDirection: 'row',
     padding: 10,
-    borderRadius: 8,  
-    
+    borderRadius: 8,
     alignItems: 'center',
-    elevation: 5, 
-    shadowColor: '#000', 
+    elevation: 5,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    paddingRight:30
+    paddingRight: 30,
+    maxWidth: '100%',
   },
   snackbarMessage: {
     color: 'white',
-    fontSize: 12,
-    flexWrap:"wrap"
+    fontSize: 14,
+    flexShrink: 1,
+    flex: 1,
   },
-  Icon:{
-  position:"absolute",
-  top:"5",
-  right:"5"
+  icon: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    padding: 4,
   },
-
 });
 
 export default Snackbar;

@@ -123,7 +123,6 @@ export function ButtonWithLoader(name, loadingName, isLoading, method) {
   );
 }
 
-
 export const renderImageBox = (
   label,
   setter,
@@ -181,7 +180,9 @@ export function ImageBottomSheet({
   isBottomSheetVisible,
   setBottomSheetVisible,
   setImageLoading,
-  user,
+  name,
+  id,
+  documentName,
   dispatch,
 }) {
   return (
@@ -200,7 +201,9 @@ export function ImageBottomSheet({
               currentImageLabel,
               setImageLoading,
               setBottomSheetVisible,
-              user,
+              name,
+              id,
+              documentName,
               dispatch
             )
           }
@@ -214,11 +217,13 @@ export function ImageBottomSheet({
           style={styles.sheetOption}
           onPress={() =>
             openGallery(
-             currentImageSetter,
+              currentImageSetter,
               currentImageLabel,
               setImageLoading,
               setBottomSheetVisible,
-              user,
+              name,
+              id,
+              documentName,
               dispatch
             )
           }

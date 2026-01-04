@@ -35,17 +35,19 @@ const VerificationScreen = ({ navigation, route }) => {
     // alert(otpInput);
     try {
       if (otpInput === otp) {
+
+        console.log("OTP is correct, proceeding with registration data:", data);
         const response = await dispatch(register(data));
 
         console.log("Response in verification ", response?.payload);
 
         if (register.fulfilled.match(response)) {
           await AsyncStorage.setItem(
-            "driver_id",
+            "user_id",
             String(response?.payload?.data?.driverId)
           );
 
-          const savedId = await AsyncStorage.getItem("driver_id");
+          const savedId = await AsyncStorage.getItem("user_id");
           console.log("driver id saved in storage", savedId);
 
           await dispatch(
@@ -55,7 +57,7 @@ const VerificationScreen = ({ navigation, route }) => {
               time: 2000,
             })
           );
-          navigation.navigate("InstructionToComplete");
+          // navigation.navigate("InstructionToComplete");
         } else {
           await dispatch(
             showSnackbar({

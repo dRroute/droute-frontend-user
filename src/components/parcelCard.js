@@ -1,30 +1,30 @@
-import React, { useEffect, useRef } from "react";
+import { Feather } from "@expo/vector-icons";
+import { useEffect, useRef } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Linking,
-  Image,
   Animated,
   Easing,
+  Image,
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
-import { Colors, screenWidth } from "../constants/styles";
+import { Colors } from "../constants/styles";
 import { trimText } from "../utils/commonMethods";
 
-export const ParcelCard = ({ parcelItem, onViewDetails }) => {
+export const ParcelCard = ({ parcelItem }) => {
   const handleCall = () => {
-    Linking.openURL(`tel:${parcelItem.phone.replace(/\s/g, "")}`);
+    Linking.openURL(`tel:${parcelItem?.journeyDetails?.driver?.contactNo?.replace(/\s/g, "")}`);
   };
 
   return (
-    <TouchableOpacity activeOpacity={0.7} style={styles.card}>
+    <View style={styles.card}>
       <View style={styles.cardContent}>
         <View style={styles.imageContainer}>
           {parcelItem.image ? (
             <Image
-              source={{ uri: parcelItem.image }}
+              source={{ uri: parcelItem?.order?.courierImageUrl1 }}
               style={styles.parcelImage}
             />
           ) : (
@@ -44,7 +44,7 @@ export const ParcelCard = ({ parcelItem, onViewDetails }) => {
         </View>
 
         <View style={styles.infoContainer}>
-          <Text style={styles.parcelId}>#{parcelItem.id}</Text>
+          <Text style={styles.parcelId}>#PCL0{parcelItem?.order?.id}</Text>
 
           <View style={styles.routeContainer}>
             <View style={styles.timeline}>
@@ -55,11 +55,11 @@ export const ParcelCard = ({ parcelItem, onViewDetails }) => {
 
             <View style={styles.addressesContainer}>
               <Text style={styles.addressText}>
-                {trimText(parcelItem.pickup.address, 50)}
+                {trimText(parcelItem?.courier?.courierSourceAddress, 50)}
               </Text>
               <View style={{ height: 15 }} />
               <Text style={styles.addressText}>
-                {trimText(parcelItem.delivery.address, 50)}
+                 {trimText(parcelItem?.courier?.courierDestinationAddress, 50)}
               </Text>
             </View>
           </View>
@@ -74,14 +74,14 @@ export const ParcelCard = ({ parcelItem, onViewDetails }) => {
             color={Colors.whiteColor}
             style={styles.phoneIcon}
           />
-          <Text style={styles.callButtonText}>{parcelItem.phone}</Text>
+          <Text style={styles.callButtonText}>{parcelItem?.journeyDetails?.driver?.contactNo}</Text>
         </TouchableOpacity>
 
         <View>
-          <Text style={[styles.statusText, { color: "teal" }]}>Delivered</Text>
+          <Text style={[styles.statusText, { color: "teal" }]}>{parcelItem?.courier?.status}</Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 

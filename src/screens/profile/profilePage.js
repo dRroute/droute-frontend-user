@@ -18,19 +18,22 @@ import {
 } from "../../constants/styles";
 import MyStatusBar from "../../components/myStatusBar";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-
+import { useDispatch, useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { fullImageContainer } from "../../components/commonComponents";
 import { showFullImageFunction } from "../../utils/commonMethods";
+import { logoutUser } from "../../redux/slice/authSlice";
+import { selectUser } from "../../redux/selector/authSelector";
 
-const image = "https://cdn.pixabay.com/photo/2024/05/26/10/15/bird-8788491_1280.jpg";
+const image =
+  "https://cdn.pixabay.com/photo/2024/05/26/10/15/bird-8788491_1280.jpg";
 const Profile = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [showLogoutSheet, setshowLogoutSheet] = useState(false);
   const [avatar, setAvatar] = useState(image);
-
-
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.bodyBackColor }}>
@@ -49,16 +52,18 @@ const Profile = ({ navigation }) => {
         </ScrollView>
       </ScrollView>
       {logoutSheet()}
-     
     </View>
   );
 
   function profileInfoWithOptions() {
     return (
       <View style={styles.profileInfoWithOptionsWrapStyle}>
-        <TouchableOpacity onPress={() => {
-         showFullImageFunction(image,setSelectedImage,setModalVisible);
-        }} style={{ alignItems: "center" }}>
+        <TouchableOpacity
+          onPress={() => {
+            showFullImageFunction(image, setSelectedImage, setModalVisible);
+          }}
+          style={{ alignItems: "center" }}
+        >
           {avatar ? (
             <Image source={{ uri: avatar }} style={styles.userImageStyle} />
           ) : (
@@ -75,19 +80,18 @@ const Profile = ({ navigation }) => {
             marginBottom: Sizes.fixPadding,
           }}
         >
-          <Text style={{ ...Fonts.blackColor18SemiBold }}>Alok Singh</Text>
-          <Text style={{ ...Fonts.grayColor16Medium }}>+91 985678876</Text>
+          <Text style={{ ...Fonts.blackColor18SemiBold }}>
+            {user?.fullName}
+          </Text>
+          <Text style={{ ...Fonts.grayColor16Medium }}>
+            +91 {user?.contactNo}
+          </Text>
         </View>
         <View>
           {profileOption({
             option: "Edit Profile",
             iconName: "person",
             onPress: () => navigation.navigate("EditProfile"),
-          })}
-          {profileOption({
-            option: "Change Password",
-            iconName: "key",
-            onPress: () => navigation.navigate("ChangePassword"),
           })}
 
           {profileOption({
@@ -101,15 +105,24 @@ const Profile = ({ navigation }) => {
             iconName: "privacy-tip",
             onPress: () => navigation.navigate("PrivacyPolicyScreen"),
           })}
-                  {profileOption({
+          {profileOption({
             option: "Raised Tickets",
             iconName: "confirmation-number",
             onPress: () => navigation.navigate("AllSupportTickets"),
           })}
-
+          {profileOption({
+            option: "Saved Parcel ",
+            iconName: "all-inbox",
+            onPress: () => navigation.navigate("AllSavedParcels"),
+          })}
+          {profileOption({
+            option: "Help & Support",
+            iconName: "help",
+            onPress: () => navigation.navigate("HelpScreen"),
+          })}
           {logoutInfo()}
         </View>
-         {fullImageContainer(modalVisible,setModalVisible ,selectedImage)}
+        {fullImageContainer(modalVisible, setModalVisible, selectedImage)}
       </View>
     );
   }
@@ -241,6 +254,7 @@ const Profile = ({ navigation }) => {
               <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() => {
+                  dispatch(logoutUser());
                   setshowLogoutSheet(false);
                   console.log(
                     "User logged out successfully in profileScreen and navigating to Signin"
@@ -319,5 +333,4 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primaryColor,
     borderBottomRightRadius: Sizes.fixPadding - 5.0,
   },
-
 });

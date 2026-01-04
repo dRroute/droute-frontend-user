@@ -27,16 +27,22 @@ import {
   reUsableOverlayWithButton,
   textArea,
 } from "../../components/commonComponents";
+import { selectAuthloader, selectUser } from "../../redux/selector/authSelector";
+import { useSelector } from "react-redux";
 
 const HelpScreen = ({ navigation }) => {
   const [title, setTitle] = useState("");
   const [email, setEmail] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [description, setDescription] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+
   const [showEmergencyDialog, setshowEmergencyDialog] = useState(false);
   const [emergencyQuery, setEmergencyQuery] = useState("");
   const [charCount, setCharCount] = useState(120);
+
+const user=useSelector(selectUser);
+const isLoading=useSelector(selectAuthloader);
+
   const time = 2000;
   const handleEmergencyQueryChange = (text) => {
     if (text.length <= 100) {
@@ -45,8 +51,16 @@ const HelpScreen = ({ navigation }) => {
     }
   };
   const handleSubmit=()=>{
+
+  const data ={
+
+  }
+
+
     console.log("Handle submit called");
   }
+
+
   const submitEmegencyQuery = () => {
     console.log("submitEmegencyQuery called");
     setshowEmergencyDialog(false);
@@ -56,6 +70,9 @@ const HelpScreen = ({ navigation }) => {
     setshowEmergencyDialog(false);
     setEmergencyQuery("");
   };
+
+
+
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
@@ -98,8 +115,7 @@ const HelpScreen = ({ navigation }) => {
             setDescription,
             "Describe Your Query....",
             "Description",
-            false,
-           
+            false, 
           )}
           <TouchableOpacity
             style={{ ...commonStyles.button, marginBottom: 50 }}
